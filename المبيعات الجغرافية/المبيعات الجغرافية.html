@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <title>📊 تقرير المبيعات الجغرافية</title>
+</head>
+<body>
+<div class="p-4 md:p-6">
+    <h2 class="text-2xl font-bold mb-4 dark:text-white">تقرير المبيعات الجغرافية</h2>
+    
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div>
+                <label for="sales-startDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">من تاريخ:</label>
+                <input type="date" id="sales-startDate" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+            </div>
+            <div>
+                <label for="sales-endDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">إلى تاريخ:</label>
+                <input type="date" id="sales-endDate" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+            </div>
+            <div>
+                <label for="sales-shippingCompany" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">شركة الشحن:</label>
+                <select id="sales-shippingCompany" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+                    <option value="all">الكل</option>
+                    <option value="أرامكس">أرامكس</option>
+                    <option value="تصل">تصل</option>
+                    <option value="ناجز اكسبريس">ناجز اكسبريس</option>
+                </select>
+            </div>
+        </div>
+        <div class="mt-4">
+            <button id="sales-generate-report-btn" class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700">📊 توليد التقرير</button>
+        </div>
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+        <div class="space-x-2 space-x-reverse">
+            <button id="sales-download-csv-btn" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">⬇️ تحميل CSV</button>
+            <button id="sales-download-pdf-btn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">⬇️ تحميل PDF</button>
+        </div>
+        <button id="sales-toggle-charts-btn" class="text-blue-600 dark:text-blue-400 hover:underline">🎨 إظهار/إخفاء الرسومات</button>
+    </div>
+
+<div id="pdf-export-area">
+    <div id="chartsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6" style="display: none;">   
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md h-80">
+            <h3 class="font-semibold text-center mb-2 dark:text-white">إجمالي المبيعات حسب الحالة</h3>
+            <canvas id="chartOverall"></canvas>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md h-80">
+            <h3 class="font-semibold text-center mb-2 dark:text-white">المبيعات الموصلة حسب الدولة</h3>
+            <canvas id="chartDeliveredByCountry"></canvas>
+        </div>
+    </div>
+
+    <div id="reportWrapper" class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <table id="reportTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">#</th>
+                    <th scope="col" class="px-6 py-3">الدولة</th>
+                    <th scope="col" class="px-6 py-3">إجمالي المبيعات (ريال)</th>
+                    <th scope="col" class="px-6 py-3">تم التنفيذ</th>
+                    <th scope="col" class="px-6 py-3">جاري التوصيل</th>
+                    <th scope="col" class="px-6 py-3">تم التوصيل</th>
+                    <th scope="col" class="px-6 py-3">ملغي</th>
+                </tr>
+            </thead>
+            <tbody id="reportBody">
+                <tr><td colspan="7" class="text-center p-5">الرجاء الضغط على "توليد التقرير" لعرض البيانات.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

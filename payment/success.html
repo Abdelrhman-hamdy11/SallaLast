@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Success</title>
+</head>
+<body>
+    <h1>Payment Successful!</h1>
+    <p>Redirecting you to Add User page...</p>
+
+    <script>
+        // بعد الدفع: لو في هدف محفوظ نرجع له داخل الداشبورد
+        setTimeout(() => {
+            const target = localStorage.getItem('postPaymentTarget');
+            if (target === 'systemusers') {
+                localStorage.removeItem('postPaymentTarget');
+                // ارجع إلى الداشبورد ثم افتح صفحة إدارة المستخدمين → إضافة مستخدم
+                window.location.href = "../dashboard.html#open_systemusers.html";
+            } else {
+                window.location.href = "../dashboard.html";
+            }
+        }, 1500);
+    </script>
+</body>
+</html>

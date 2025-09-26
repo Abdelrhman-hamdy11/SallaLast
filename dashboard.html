@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salla Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; }
+        #main-content { transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; }
+        #main-content.is-loading { opacity: 0; transform: translateY(15px); }
+        .rtl .border-l-4 { border-left: 0; border-right: 4px solid; }
+        
+        .nav-link.active {
+            background-color: #eff6ff;
+            color: #2563eb;
+            border-right: 4px solid #2563eb;
+        }
+        .text-black{
+            color: black !important;
+            padding: 4px;
+        }
+        /* --- Dark Mode Styles (kept for pages that might still use it) --- */
+        body.dark-mode { 
+            background-color: #111827;
+            color: #d1d5db;
+        }
+        .dark-mode .bg-white { background-color: #1f2937; }
+        .dark-mode .bg-gray-100 { background-color: #111827; }
+        .dark-mode .text-gray-800 { color: #e5e7eb; }
+        .dark-mode .text-gray-700 { color: #d1d5db; }
+        .dark-mode .text-gray-500 { color: #9ca3af; }
+        .dark-mode .border-b,
+        .dark-mode .border-t { border-color: #374151; }
+        .dark-mode .hover\:bg-blue-50:hover { background-color: #374151; }
+        .dark-mode .hover\:text-red-600:hover { color: #f87171; }
+        .dark-mode .nav-link.active {
+            background-color: #1e3a8a;
+            color: #60a5fa;
+            border-right-color: #60a5fa;
+        }
+
+        /* Hide report links by default */
+        [data-report-id] {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            .sidebar {
+                transform: translateX(100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            .sidebar.expanded {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body id="body" class="rtl p-0">
+    
+    <div class="flex h-screen bg-gray-100 dark:bg-gray-900">
+        <div id="sidebar" class="sidebar bg-white w-64 shadow-lg z-30 flex flex-col dark:bg-gray-800 fixed md:relative h-full">
+            <div class="p-4 border-b dark:border-gray-700">
+                <h1 class="text-xl font-bold text-blue-600 flex items-center dark:text-blue-400">
+                    <i class="fas fa-store ml-2"></i>
+                    لوحة تحكم سلة
+                </h1>
+            </div>
+            <nav class="flex-1 overflow-y-auto py-4">
+                <a href="./dashboard_content/dashboard-content.html" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700">
+                    <i class="fas fa-home ml-3"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+                <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-4">الإدارة</div>
+                <a data-report-id="5" href="./الطلبات المتاخرة/الطلبات المتاخره.html" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700">
+                    <i class="fas fa-clock ml-3"></i>
+                    <span>تقرير الطلبات المتأخرة</span>
+                </a>
+                <a data-report-id="4" href="./الطلبات الجغرافية/الطلبات الجغرافية.html" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700">
+                    <i class="fas fa-map-marker-alt ml-3"></i>
+                    <span>الطلبات الجغرافية</span>
+                </a>
+                <a data-report-id="2" href="./المبيعات الجغرافية/المبيعات الجغرافية.html" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700">
+                    <i class="fas fa-dollar-sign ml-3"></i>
+                    <span>المبيعات الجغرافية</span>
+                </a>
+                <a data-report-id="3" href="./سلسلة الطلبات/سلسلة الطلبات.html" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700">
+                    <i class="fas fa-chart-line ml-3"></i>
+                    <span>سلسلة الطلبات</span>
+                </a>
+                <a data-report-id="1" href="./سلسلة المبيعات/سلسلة المبيعات.html" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700">
+                    <i class="fas fa-coins ml-3"></i>
+                    <span>سلسلة المبيعات</span>
+                </a>
+                <a data-report-id="9" href="./settings/settings.html" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700">
+                    <i class="fas fa-gear ml-3"></i>
+                    <span>اعدادات الطلبات المتأخرة</span>
+                </a>
+                <a data-report-id="8" href="./ادارة المستخدمين/systemusers.html" class="nav-link flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700">
+                    <i class="fas fa-users-cog ml-3"></i>
+                    <span>إدارة المستخدمين</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t dark:border-gray-700">
+                <button id="logoutBtn" class="flex items-center text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400">
+                    <i class="fas fa-sign-out-alt ml-3"></i>
+                    <span>تسجيل الخروج</span>
+                </button>
+            </div>
+        </div>
+        
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden"></div>
+        
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="bg-white shadow-sm z-10 dark:bg-gray-800">
+                <div class="flex items-center justify-between p-4">
+                    <div class="flex items-center">
+                        <button id="sidebarToggle" class="md:hidden text-gray-500 ml-4"><i class="fas fa-bars"></i></button>
+                        <h2 id="header-title" class="text-lg font-semibold text-gray-800 dark:text-gray-200">لوحة التحكم</h2>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-user-circle text-2xl text-gray-500 dark:text-gray-400"></i>
+                        <div class="text-right">
+                            <p id="user-display-name" class="text-sm font-semibold text-gray-800 dark:text-gray-200">...</p>
+                            <p id="user-display-email" class="text-xs text-gray-500 dark:text-gray-400">...</p>
+                        </div>
+                    </div>
+                    </div>
+            </header>
+            
+            <main id="main-content" class="flex-1 overflow-y-auto p-4 md:p-6"></main>
+        </div>
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="./assets/encoded-20250920101421.js"></script>
+<script src="./الطلبات المتاخرة/main.js" defer></script>
+<script src="./الطلبات الجغرافية/main.js" defer></script>
+<script src="./المبيعات الجغرافية/main.js" defer></script>
+<script src="./سلسلة الطلبات/main.js" defer></script>
+<script src="./سلسلة المبيعات/main.js" defer></script>
+<script src="./settings/main.js" defer></script>
+<script src="./ادارة المستخدمين/systemusers.js" defer></script>
+<script src="./اضافة مستخدم/add_users.js" defer></script>
+<script src="./تعديل المستخدم/user_update.js"></script>
+<script src="./الصلاحيات/pre.js"></script>
+<script src="./dashboard_content/dashboard.js"></script>
+<script>
+    const mainContent = document.getElementById('main-content');
+    const headerTitle = document.getElementById('header-title');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    // Global variable for permissions
+    window.userPermissions = [];
+    window.permissionsLoaded = false;
+
+    // --- START: Display User Info Logic ---
+    function displayUserInfo() {
+        const email = localStorage.getItem("sala_admin_email") || localStorage.getItem("user_email");
+        if (email) {
+            const userName = email.split('@')[0];
+            document.getElementById('user-display-name').textContent = userName;
+            document.getElementById('user-display-email').textContent = email;
+        } else {
+            document.getElementById('user-display-name').textContent = "المستخدم";
+            document.getElementById('user-display-email').textContent = "غير مسجل";
+        }
+    }
+    // --- END: Display User Info Logic ---
+
+    async function fetchUserPermissions() {
+        try {
+            const email = localStorage.getItem("sala_admin_email") || localStorage.getItem("user_email");
+            if (!email) {
+                console.warn("No user email in localStorage");
+                return;
+            }
+
+            const idRes = await fetch("https://sala.runasp.net/api/Account/getUserId", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
+            
+            if (!idRes.ok) {
+                console.error("Failed to get user ID");
+                return;
+            }
+            
+            const idData = await idRes.json();
+            const userId = idData && (idData.userId || idData.UserId || idData.id);
+            if (!userId) {
+                console.error("User ID not correctly retrieved from the service");
+                return;
+            }
+
+            const res = await fetch(`https://sala.runasp.net/api/ReportPermissions/GetPermissionsByUserId/${userId}`);
+            
+            if (!res.ok) {
+                console.error("Failed to get user permissions");
+                return;
+            }
+            
+            window.userPermissions = await res.json();
+            window.permissionsLoaded = true;
+            
+            console.log("Permissions loaded successfully:", window.userPermissions);
+
+            applyPermissions();
+        } catch (err) {
+            console.error("Error fetching permissions:", err);
+            hideAllReports();
+        }
+    }
+
+    function hasAccess(reportId) {
+        if (!window.permissionsLoaded) return false;
+        return window.userPermissions.some(p => p.reportId === reportId && p.hasAccess);
+    }
+
+    function hideAllReports() {
+        document.querySelectorAll("[data-report-id]").forEach(link => {
+            link.style.display = "none";
+        });
+    }
+
+    function applyPermissions() {
+        if (!window.permissionsLoaded) {
+            console.warn("Permissions not yet loaded");
+            hideAllReports();
+            return;
+        }
+
+        let hasAnyAccess = false;
+        
+        document.querySelectorAll("[data-report-id]").forEach(link => {
+            const reportId = parseInt(link.getAttribute("data-report-id"), 10);
+            
+            if (hasAccess(reportId)) {
+                link.style.display = "flex"; 
+                hasAnyAccess = true;
+                console.log(`Access granted for report ID: ${reportId}`);
+            } else {
+                link.style.display = "none";
+                console.log(`Access denied for report ID: ${reportId}`);
+            }
+        });
+
+        if (!hasAnyAccess) {
+            console.warn("User has no access to any reports");
+        }
+    }
+
+    function checkPermissionBeforeNavigation(link) {
+        const reportId = parseInt(link.getAttribute("data-report-id"), 10);
+        
+        if (!reportId) { // Links without reportId are always allowed
+            return true;
+        }
+
+        if (!window.permissionsLoaded) {
+            alert("Loading permissions, please try again shortly.");
+            return false;
+        }
+
+        if (!hasAccess(reportId)) {
+            alert("Sorry, you do not have permission to access this report.");
+            return false;
+        }
+
+        return true;
+    }
+
+    // --- Sidebar Logic for Mobile ---
+    function toggleSidebar() {
+        sidebar.classList.toggle('expanded');
+        sidebarOverlay.classList.toggle('hidden');
+    }
+
+    // --- SPA Content Loading Logic ---
+    const loadContent = async (url, initCallback , data = null) => {
+        mainContent.classList.add('is-loading');
+        
+        setTimeout(async () => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                const content = await response.text();
+                mainContent.innerHTML = content;
+                
+                if (typeof initCallback === 'function') {
+                    initCallback(data);
+                }
+                
+                mainContent.classList.remove('is-loading');
+            } catch (error) {
+                mainContent.innerHTML = `<div class="p-10 text-center text-red-500"><h2>Sorry, an error occurred</h2><p>The requested content could not be loaded. Please ensure the file exists at the correct path.</p><p class="mt-2 text-sm text-gray-400">${error.message}</p></div>`;
+                mainContent.classList.remove('is-loading');
+                console.error('Fetch Error:', error);
+            }
+        }, 300);
+    };
+
+    // --- Event Listeners Setup ---
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            if (!checkPermissionBeforeNavigation(link)) {
+                return;
+            }
+
+            if(link.classList.contains('active')) return;
+
+            const url = link.getAttribute('href');
+            let initFunction = null;
+
+            if (url.includes('dashboard-content.html')) {
+                initFunction = initDashboardPage;
+            }
+            else if (url.includes('الطلبات الجغرافية.html')) {
+                initFunction = initGeographicalOrdersReport;
+            } 
+            else if (url.includes('الطلبات المتاخره.html')) {
+                initFunction = initDelayedOrdersReport;
+            }
+            else if (url.includes('المبيعات الجغرافية.html')) {
+                initFunction = initGeographicalSalesReport;
+            } 
+            else if (url.includes('سلسلة الطلبات.html')) {
+                initFunction = initOrderSeriesReport;
+            }
+            else if (url.includes('سلسلة المبيعات.html')) {
+                initFunction = initSalesSeriesReport;
+            }
+            else if (url.includes('settings.html')) {
+                initFunction = setupSettingsPage;
+            }
+            else if (url.includes('systemusers.html')) {
+                initFunction = initUserManagementPage;
+            }
+            
+            loadContent(url, initFunction);
+
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+
+            const pageTitle = link.querySelector('span').textContent;
+            headerTitle.textContent = pageTitle;
+            document.title = `${pageTitle} - Salla Dashboard`;
+
+            if (window.innerWidth < 768) toggleSidebar();
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        displayUserInfo(); // Call the new function to show user info
+        
+        hideAllReports();
+        
+        await fetchUserPermissions();
+
+        const firstLink = document.querySelector('.nav-link');
+        if(firstLink){
+            const hash = window.location.hash;
+            let targetLink = firstLink;
+            let initFn = null;
+
+            if (hash === '#open_users' || hash === '#open_add_user') {
+                const usersLink = Array.from(document.querySelectorAll('.nav-link')).find(a => a.getAttribute('href')?.includes('systemusers.html'));
+                if (usersLink) {
+                    targetLink = usersLink;
+                }
+            }
+
+            if (checkPermissionBeforeNavigation(targetLink)) {
+                targetLink.classList.add('active');
+                headerTitle.textContent = targetLink.querySelector('span').textContent;
+                document.title = `${headerTitle.textContent} - Salla Dashboard`;
+
+                const url = targetLink.getAttribute('href');
+                if (url.includes('dashboard-content.html')) initFn = initDashboardPage;
+                else if (url.includes('الطلبات الجغرافية.html')) initFn = initGeographicalOrdersReport;
+                else if (url.includes('الطلبات المتاخره.html')) initFn = initDelayedOrdersReport;
+                else if (url.includes('المبيعات الجغرافية.html')) initFn = initGeographicalSalesReport;
+                else if (url.includes('سلسلة الطلبات.html')) initFn = initOrderSeriesReport;
+                else if (url.includes('سلسلة المبيعات.html')) initFn = initSalesSeriesReport;
+                else if (url.includes('settings.html')) initFn = setupSettingsPage; 
+                else if (url.includes('systemusers.html')) initFn = initUserManagementPage;
+
+                loadContent(url, () => {
+                    if (typeof initFn === 'function') {
+                        initFn();
+                    }
+                    if (hash === '#open_add_user') {
+                        const addBtn = document.querySelector('#main-content .add-user-btn');
+                        if (addBtn) addBtn.click();
+                        history.replaceState(null, '', window.location.pathname);
+                    }
+                });
+            } else {
+                const allowedLink = Array.from(navLinks).find(link => {
+                    const reportId = parseInt(link.getAttribute("data-report-id"), 10);
+                    return !reportId || hasAccess(reportId);
+                });
+                
+                if (allowedLink) {
+                    allowedLink.click();
+                } else {
+                    mainContent.innerHTML = `
+                        <div class="p-10 text-center text-gray-500">
+                            <i class="fas fa-lock text-6xl mb-4"></i>
+                            <h2 class="text-2xl font-bold mb-2">No Permissions</h2>
+                            <p>Sorry, you do not have permission to access any of the available reports.</p>
+                            <p class="mt-2">Please contact the administrator to grant you the appropriate permissions.</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    });
+    
+    sidebarToggle.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', toggleSidebar);
+</script>
+    
+</body>
+</html>

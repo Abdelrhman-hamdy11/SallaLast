@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المستخدمين - Salla Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    
+    <div id="main-content" class="p-4 md:p-8">
+
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">إدارة المستخدمين</h1>
+                <p class="mt-2 text-gray-500 dark:text-gray-400">إدارة المستخدمين الحاليين وأدوارهم وصلاحياتهم.</p>
+            </div>
+            <button class="add-user-btn mt-4 md:mt-0 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                <i class="fas fa-plus"></i>
+                <span>إضافة مستخدم</span>
+            </button>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 dark:bg-gray-700/50">
+                        <tr>
+                            <th class="p-4 text-right text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">المعرف</th>
+                            <th class="p-4 text-right text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">الاسم</th>
+                            <th class="p-4 text-right text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">البريد الإلكتروني</th>
+                            <th class="p-4 text-right text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">الدور</th>
+                            <th class="p-4 text-right text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- الصفوف سيتم ملئها ديناميكياً -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 flex flex-col md:flex-row items-center justify-between border-t border-gray-200 dark:border-gray-700">
+                <span class="text-sm text-gray-600 dark:text-gray-400 mb-2 md:mb-0" id="table-info">
+                    لا توجد نتائج للعرض
+                </span>
+                <div class="inline-flex rounded-md shadow-sm -space-x-px" role="group">
+    <button type="button"
+        class="pagination-prev px-3 py-1.5 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700">
+        السابق
+    </button>
+    <span id="pageNumber"
+    class="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 border border-blue-600 dark:bg-blue-500 dark:border-blue-500">
+    1
+    </span>
+    <button type="button"
+        class="pagination-next px-3 py-1.5 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700">
+        التالي
+    </button>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadUsers(); // تحميل المستخدمين عند فتح الصفحة
+        });
+    </script>
+</body>
+</html>

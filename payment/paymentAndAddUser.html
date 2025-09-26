@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add User with Payment</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; }
+        .hidden { display: none; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input, select { padding: 8px; width: 300px; }
+        button { padding: 10px 20px; cursor: pointer; }
+        #userForm { border: 1px solid #ccc; padding: 20px; width: 350px; }
+        #message { margin-top: 20px; font-weight: bold; color: green; }
+    </style>
+</head>
+<body>
+
+<h1>Add User System</h1>
+
+<div id="paymentSection">
+    <p>To add a new user, you must pay $10 first.</p>
+    <button id="payButton">Pay $10</button>
+</div>
+
+<div id="userForm" class="hidden">
+    <h2>Add User</h2>
+    <div class="form-group">
+        <label>Display Name</label>
+        <input type="text" id="displayName">
+    </div>
+    <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email">
+    </div>
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password">
+    </div>
+    <div class="form-group">
+        <label>Role</label>
+        <input type="radio" name="role" value="Admin" checked> Admin
+        <input type="radio" name="role" value="User"> User
+    </div>
+    <button id="addUserBtn">Add User</button>
+</div>
+
+<div id="message"></div>
+
+<script>
+    const adminEmail = localStorage.getItem("sala_admin_email");
+    let userId = null; // هيتجاب من API
+    let hasPaid = false;
+
+    async function fetchUserId() {
+        try {
+            const res = await fetch("https://sala.runasp.net/api/Account/getUserId", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: adminEmail })
+            });
+            const data = await res.json();
+            if (res.ok && data.userId) {
+                userId = data.userId;
+                console.log("✅ UserId fetched:", userId);
+                checkPayment(); // بعد ما يجيب الـ UserId يتأكد من الدفع
+            } else {
+                console.error("❌ Failed to fetch userId:", data);
+                alert("Error fetching User ID");
+            }
+        } catch (err) {
+            console.error("❌ Error fetching userId:", err);
+        }
+    }
+
+    const payButton = document.getElementById("payButton");
+    const paymentSection = document.getElementById("paymentSection");
+    const userForm = document.getElementById("userForm");
+
+    payButton.addEventListener("click", async () => {
+        if (!userId) {
+            alert("User ID not loaded yet, try again.");
+            return;
+        }
+        try {
+            const res = await fetch("https://sala.runasp.net/api/Payments/CreateCheckoutSession", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    amount: 1000, // 10$ in cents
+                    currency: "USD",
+                    productName: "Add User Access",
+                    userId: userId,
+                    email :adminEmail
+                })
+            });
+            const data = await res.json();
+            if (data.url) {
+                window.location.href = data.url; // redirect to Stripe checkout
+            }
+        } catch (err) {
+            alert("Error creating payment session");
+            console.error(err);
+        }
+    });
+
+    async function checkPayment() {
+        if (!userId) return;
+        try {
+            const res = await fetch(`https://sala.runasp.net/api/Payments/CheckPayment/${userId}`);
+            const data = await res.json();
+            if (data.hasPaid) {
+                hasPaid = true;
+                paymentSection.classList.add("hidden");
+                userForm.classList.remove("hidden");
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    document.getElementById("addUserBtn").addEventListener("click", async () => {
+        if (!hasPaid) {
+            alert("You must pay first!");
+            return;
+        }
+
+        const displayName = document.getElementById("displayName").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const role = document.querySelector('input[name="role"]:checked').value;
+
+        try {
+            const res = await fetch(`https://sala.runasp.net/api/Account/addUser`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ displayName, email, password, role, adminEmail })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                alert("User added successfully!");
+                hasPaid = false; // reset payment
+                userForm.classList.add("hidden");
+                paymentSection.classList.remove("hidden");
+            } else {
+                alert(data.detail || "Error adding user");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Error adding user");
+        }
+    });
+
+    // اول ما الصفحة تفتح يجيب الـ userId
+    window.addEventListener("DOMContentLoaded", fetchUserId);
+</script>
+
+</body>
+</html>

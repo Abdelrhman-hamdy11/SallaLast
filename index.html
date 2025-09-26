@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SallaSync - منصة تقارير المبيعات التلقائية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="./assets/icons2/icon-192x192.png">
+    
+<script>
+    if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+        .then(reg => console.log('Service Worker registered:', reg))
+        .catch(err => console.log('Service Worker registration failed:', err));
+    });
+    }
+</script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0d1421 0%, #1a2332 50%, #2d3a4b 100%);
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(13, 20, 33, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4f9cf9;
+        }
+
+        .logo i {
+            background: linear-gradient(45deg, #4f9cf9, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #4f9cf9;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #4f9cf9, #7c3aed);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="200" cy="200" r="100" fill="rgba(79,156,249,0.1)"/><circle cx="800" cy="300" r="150" fill="rgba(124,58,237,0.1)"/><circle cx="400" cy="700" r="80" fill="rgba(79,156,249,0.1)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #4f9cf9, #7c3aed, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4f9cf9, #7c3aed);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 15px 30px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(79, 156, 249, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #4f9cf9;
+        }
+
+        .hero-features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .hero-feature i {
+            color: #22c55e;
+        }
+
+        .hero-image {
+            margin-top: 3rem;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 900px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: rgba(13, 20, 33, 0.5);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #4f9cf9, #7c3aed);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-icon.data-driven {
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+        }
+
+        .feature-icon.schedule {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+        }
+
+        .feature-icon.integration {
+            background: linear-gradient(45deg, #4f9cf9, #3b82f6);
+        }
+
+        .feature-icon.team {
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+        }
+
+        .feature-icon.export {
+            background: linear-gradient(45deg, #06b6d4, #0891b2);
+        }
+
+        .feature-icon.whatsapp {
+            background: linear-gradient(45deg, #10b981, #059669);
+        }
+
+        .feature-icon.security {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+        }
+
+        .feature-icon.reliable {
+            background: linear-gradient(45deg, #6366f1, #4f46e5);
+        }
+
+        .feature-icon.localized {
+            background: linear-gradient(45deg, #f97316, #ea580c);
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background: rgba(79, 156, 249, 0.2);
+            color: #4f9cf9;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 100px 0;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card.featured {
+            background: rgba(79, 156, 249, 0.1);
+            border: 2px solid #4f9cf9;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'الأكثر شعبية';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #4f9cf9, #7c3aed);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .plan-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+        }
+
+        .plan-icon.starter {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+        }
+
+        .plan-icon.professional {
+            background: linear-gradient(45deg, #4f9cf9, #3b82f6);
+        }
+
+        .plan-icon.enterprise {
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-price {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-price span {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .plan-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: right;
+        }
+
+        .plan-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plan-features li i {
+            color: #22c55e;
+            flex-shrink: 0;
+        }
+
+        .plan-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .plan-button.primary {
+            background: linear-gradient(45deg, #4f9cf9, #7c3aed);
+            color: white;
+        }
+
+        .plan-button.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .plan-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* About Section */
+        .about {
+            padding: 100px 0;
+            background: rgba(13, 20, 33, 0.5);
+        }
+
+        .about-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .about p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(13, 20, 33, 0.8);
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .footer-section a:hover {
+            color: #4f9cf9;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-features {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: none;
+            }
+        }
+
+        /* Animation */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-up {
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        /* Dashboard Preview */
+        .dashboard-preview {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 3rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-change.positive {
+            color: #22c55e;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-chart-bar"></i>
+                    SallaSync
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#features">المميزات</a></li>
+                    <li><a href="#pricing">الأسعار</a></li>
+                    <li><a href="#about">حول</a></li>
+                    <li><a href="#contact">تواصل معنا</a></li>
+                </ul>
+                <a href="login.html" class="cta-button">ابدأ تجربة مجانية</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content animate-slide-up">
+                <h1>أربط متجر سلة الخاص بك<br>تقارير المبيعات الآلية</h1>
+                <p>جلب ومتابعة وتحليل بيانات متجر سلة تلقائياً احصل على تقارير يومية مع تطبيقات الطلبات المتقدمة وإمكانيات التصدير</p>
+                
+                <div class="hero-buttons">
+                    <a href="login.html" class="btn-primary">
+                        <i class="fas fa-rocket"></i>
+                        ابدأ تجربة مجانية
+                    </a>
+                    
+                </div>
+
+                <div class="hero-features">
+                    <div class="hero-feature">
+                        <i class="fas fa-check-circle"></i>
+                        Daily @ 12:00 AM
+                    </div>
+                    <div class="hero-feature">
+                        <i class="fas fa-check-circle"></i>
+                        Automated Reports
+                    </div>
+                    <div class="hero-feature">
+                        <i class="fas fa-check-circle"></i>
+                        OAuth2 Salla Integration
+                    </div>
+                </div>
+
+                <div class="hero-image">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ec479964-e4f0-414b-9037-e65440062dbb.png" alt="لوحة تحكم SallaSync تعرض تقارير المبيعات التفصيلية مع الرسوم البيانية والإحصائيات في واجهة حديثة باللون الأزرق الداكن" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>مميزات قوية لعملك</h2>
+                <p>كل ما تحتاجه لإدارة تقارير متجر سلة</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-badge">Data-Driven</div>
+                    <div class="feature-icon data-driven">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>تحليلات فورية</h3>
+                    <p>راقب أداء متجرك بالرسوم البيانية والمؤشرات المباشرة</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-badge">Set & Forget</div>
+                    <div class="feature-icon schedule">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>تقارير يومية آلية</h3>
+                    <p>احصل على تقارير شاملة للمبيعات والطلبات يتم إنشاؤها تلقائياً في منتصف الليل</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-badge">Secure & Official</div>
+                    <div class="feature-icon integration">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3>تكامل API سلة الرسمي</h3>
+                    <p>اتصال آمن OAuth2 مع متجر سلة الخاص بك باستخدام API الرسمي</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-badge">Team Ready</div>
+                    <div class="feature-icon team">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>وصول متعدد المستخدمين</h3>
+                    <p>ادع أعضاء الفريق مع صلاحيات قائمة على الأدوار</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-badge">Flexible Output</div>
+                    <div class="feature-icon export">
+                        <i class="fas fa-file-export"></i>
+                    </div>
+                    <h3>تصدير ومشاركة</h3>
+                    <p>صدر التقارير كـ PDF/Excel ومشاركها عبر الواتساب أو البريد الإلكتروني</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-badge">Instant Alerts</div>
+                    <div class="feature-icon whatsapp">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <h3>تسليم عبر الواتساب</h3>
+                    <p>استقبل التقارير مباشرة في الواتساب أو شاركها تلقائياً مع مجموعة فريقك</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-badge">Localized</div>
+                    <div class="feature-icon localized">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>تركيز على السعودية</h3>
+                    <p>مصمم خصيصاً للتجار السعوديين مع دعم العربية والمناطق الزمنية المحلية وعملة الريال</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-badge">Secure</div>
+                    <div class="feature-icon security">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>أمان المؤسسات</h3>
+                    <p>أمان بمستوى البنوك مع تشفير البيانات المخزنة واستعلامات API آمنة ومطابقة GDPR</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-badge">Reliable</div>
+                    <div class="feature-icon reliable">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3>تحديث الرموز التلقائي</h3>
+                    <p>إدارة ذكية للرموز المميزة تضمن اتصال مستمر متجر سلة دون تدخل يدوي</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview -->
+    <section class="dashboard-preview">
+        <div class="container">
+            <div class="section-title">
+                <h2>Sala Dashboard</h2>
+                <p>Our Reports</p>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-value">455,000 SAR</div>
+                    <div class="stat-label">Total Sales</div>
+                    <div class="stat-change positive">+12.5% from last month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">666</div>
+                    <div class="stat-label">Total Orders</div>
+                    <div class="stat-change positive">+8.2% from last month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">23</div>
+                    <div class="stat-label">Delayed Orders</div>
+                    <div class="stat-change negative">-15.2% from last month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">683 SAR</div>
+                    <div class="stat-label">Avg. Order Value</div>
+                    <div class="stat-change positive">+5.1% from last month</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-title">
+                <h2>أسعار بسيطة وشفافة</h2>
+                <p>اختر الخطة التي تناسب احتياجات عملك</p>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="plan-icon starter">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="plan-name">المبتدئ</div>
+                    <div class="plan-description">مثالي للشركات الصغيرة</div>
+                    <div class="plan-price">SAR 299<span>/شهر</span></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> ربط متجر واحد</li>
+                        <li><i class="fas fa-check"></i> تقارير يومية آلية</li>
+                        <li><i class="fas fa-check"></i> لوحة تحليلات أساسية</li>
+                        <li><i class="fas fa-check"></i> تصدير PDF/Excel</li>
+                        <li><i class="fas fa-check"></i> دعم بريد إلكتروني</li>
+                        <li><i class="fas fa-check"></i> حتى 2 مستخدم</li>
+                    </ul>
+                    <button class="plan-button secondary">ابدأ الآن</button>
+                </div>
+
+                <div class="pricing-card featured">
+                    <div class="plan-icon professional">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="plan-name">المحترف</div>
+                    <div class="plan-description">للشركات النامية</div>
+                    <div class="plan-price">SAR 599<span>/شهر</span></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> حتى 3 متاجر</li>
+                        <li><i class="fas fa-check"></i> تحليلات متقدمة</li>
+                        <li><i class="fas fa-check"></i> تكامل الواتساب</li>
+                        <li><i class="fas fa-check"></i> جدولة تقارير مخصصة</li>
+                        <li><i class="fas fa-check"></i> دعم أولوية</li>
+                        <li><i class="fas fa-check"></i> حتى 10 مستخدمين</li>
+                        <li><i class="fas fa-check"></i> وصول API</li>
+                    </ul>
+                    <a href="login.html" class="plan-button primary">ابدأ تجربة مجانية</a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="plan-icon enterprise">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="plan-name">المؤسسي</div>
+                    <div class="plan-description">للمؤسسات الكبيرة</div>
+                    <div class="plan-price">SAR 1299<span>/شهر</span></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> متاجر غير محدودة</li>
+                        <li><i class="fas fa-check"></i> تكاملات مخصصة</li>
+                        <li><i class="fas fa-check"></i> مدير حساب مخصص</li>
+                        <li><i class="fas fa-check"></i> إدارة مستخدمين متقدمة</li>
+                        <li><i class="fas fa-check"></i> تقارير مخصصة</li>
+                        <li><i class="fas fa-check"></i> مستخدمين غير محدودين</li>
+                        <li><i class="fas fa-check"></i> دعم هاتفي 24/7</li>
+                    </ul>
+                    <button class="plan-button secondary">تواصل بالمبيعات</button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem; color: rgba(255, 255, 255, 0.7);">
+                <p>All plans include SSL security, 99.9% uptime, and 24/7 support</p>
+                <p style="margin-top: 0.5rem;">Add extra users: 50 SAR/month each <i class="fas fa-user-plus"></i></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <h2>قصتنا</h2>
+                <p>تأسست من قبل خبراء التجارة الإلكترونية الذين فهموا التحديات التي يواجهها التجار عبر الإنترنت، وُلدت SallaSync من الحاجة إلى رؤى أفضل للبيانات والتقارير الآلية.</p>
+                <p>اليوم، نواصل الابتكار ونوسع منصتنا لخدمة الشركات من جميع الأحجام عبر الشرق الأوسط وخارجه.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>الشركة</h3>
+                    <a href="#about">المميزات</a>
+                    <a href="#pricing">الأسعار</a>
+                    <a href="#features">التوثيق</a>
+                    <a href="#contact">اتصل بنا</a>
+                </div>
+                <div class="footer-section">
+                    <h3>الدعم</h3>
+                    <a href="#support">مركز المساعدة</a>
+                    <a href="#contact">اتصل بنا</a>
+                    <a href="#status">الحالة</a>
+                    <a href="#terms">شروط الخدمة</a>
+                </div>
+                <div class="footer-section">
+                    <h3>SallaSync</h3>
+                    <p>Automated sales reporting and analytics platform specifically designed for Saudi Arabian Salla merchants</p>
+                    <p style="margin-top: 1rem;">Built with ❤️ for the Saudi e-commerce community</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© SallaSync 2024. جميع الحقوق محفوظة | <a href="#privacy">سياسة الخصوصية</a> | <a href="#terms">شروط الخدمة</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(13, 20, 33, 0.95)';
+            } else {
+                header.style.background = 'rgba(13, 20, 33, 0.9)';
+            }
+        });
+
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all feature cards and pricing cards
+        document.querySelectorAll('.feature-card, .pricing-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Handle CTA button clicks
+        document.querySelectorAll('.cta-button, .btn-primary').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '/signup' || this.getAttribute('href') === '/dashboard') {
+                    e.preventDefault();
+                    alert('هذا هو عرض توضيحي. في التطبيق الحقيقي، سيتم توجيهك إلى صفحة التسجيل أو لوحة التحكم.');
+                }
+            });
+        });
+
+        // Mobile menu toggle (if needed)
+        const mobileMenuToggle = document.createElement('button');
+        mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+        mobileMenuToggle.className = 'mobile-menu-toggle';
+        mobileMenuToggle.style.cssText = `
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            @media (max-width: 768px) {
+                display: block;
+            }
+        `;
+
+        // Add some interactivity to dashboard stats
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add floating animation to hero background
+        const heroSection = document.querySelector('.hero');
+        let floatDirection = 1;
+        
+        setInterval(() => {
+            const currentTransform = heroSection.style.transform || 'translateY(0px)';
+            const currentY = parseInt(currentTransform.match(/-?\d+/) || 0);
+            
+            if (currentY >= 10) floatDirection = -1;
+            if (currentY <= -10) floatDirection = 1;
+            
+            heroSection.style.transform = `translateY(${currentY + floatDirection}px)`;
+        }, 100);
+
+        console.log('SallaSync Landing Page Loaded Successfully! 🚀');
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">  
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة مستخدم جديد</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+        }
+    </style>
+    <meta charset="UTF-8" />
+    <title>إعدادات الطلبات المتأخرة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="main.js"></script>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #1f2937;
+            direction: rtl;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #1f2937;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: right;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 0.5rem;
+            border: 1px solid #1f2937;
+            border-radius: 0.25rem;
+        }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .text-darkk{
+            color: black !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-2xl font-bold mb-6 text-white">⚙️ إعدادات الطلبات المتأخرة</h2>
+        
+        <!-- إعدادات مدد التأخير -->
+        <div class="mb-8 p-4 bg-gray-800 rounded-lg">
+            <h3 class="text-xl font-semibold mb-4 text-white">إعدادات مدد التأخير</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="text-white">الحالة</th>
+                        <th class="text-white">المدة (أيام)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-white">تم التنفيذ</td>
+                        <td><input class="text-darkk bg-gray-100" type="number" id="delayTemTanfeez" min="0" /></td>
+                    </tr>
+                    <tr>
+                        <td class="text-white">جاري التوصيل</td>
+                        <td><input class="text-darkk bg-gray-100" type="number" id="delayJariTawseel" min="0" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="saveDelaySettingsBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mt-4 w-full transition-colors">
+                💾 حفظ إعدادات مدد التأخير
+            </button>
+            <div id="delaySettingsMessage" class="mt-2 p-2 rounded-lg text-center hidden"></div>
+        </div>
+
+        <!-- التشغيل التلقائي للتقارير -->
+<div class="mt-8 p-4 bg-gray-800 rounded-lg mb-8">
+    <h3 class="text-xl font-semibold mb-4 text-white">التشغيل التلقائي للتقارير</h3>
+    <p class="text-gray-400 mb-4">قم بإدخال البريد الإلكتروني وجدولة وقت إرسال التقرير.</p>
+    
+    <div class="mb-4">
+        <label for="autoEmailReport" class="block text-sm font-medium text-gray-400 mb-1">البريد الإلكتروني للمستلم</label>
+        <input type="email" id="autoEmailReport" 
+               class="w-full p-2 rounded-lg border border-gray-600 bg-gray-700 text-white" 
+               placeholder="أدخل البريد الإلكتروني" 
+               dir="ltr" />
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-400 mb-1">وقت الإرسال (تنسيق 24 ساعة)</label>
+            <div class="flex items-center gap-2">
+                <input type="number" id="reportHour" min="0" max="23" placeholder="الساعة" class="w-full p-2 rounded-lg border border-gray-600 bg-gray-700 text-white text-center" />
+                <span class="text-gray-400 font-bold">:</span>
+                <input type="number" id="reportMinute" min="0" max="59" placeholder="الدقيقة" class="w-full p-2 rounded-lg border border-gray-600 bg-gray-700 text-white text-center" />
+            </div>
+        </div>
+        <div>
+            <label for="reportTimeZone" class="block text-sm font-medium text-gray-400 mb-1">المنطقة الزمنية</label>
+            <select id="reportTimeZone" class="w-full p-2 rounded-lg border border-gray-600 bg-gray-700 text-white">
+<option value="UTC">(UTC+00:00) التوقيت العالمي UTC</option>
+
+<optgroup label="الخليج العربي">
+  <option selected value="Arab Standard Time">(UTC+03:00) الرياض - السعودية</option>
+  <option value="Arab Standard Time">(UTC+03:00) الكويت - الكويت</option>
+  <option value="Arab Standard Time">(UTC+03:00) الدوحة - قطر</option>
+  <option value="Arab Standard Time">(UTC+03:00) صنعاء - اليمن</option>
+  <option value="Arabian Standard Time">(UTC+04:00) دبي - الإمارات</option>
+  <option value="Arabian Standard Time">(UTC+04:00) مسقط - عمان</option>
+</optgroup>
+
+<optgroup label="شمال أفريقيا">
+  <option value="Morocco Standard Time">(UTC+01:00) الرباط - المغرب</option>
+  <option value="W. Central Africa Standard Time">(UTC+01:00) الجزائر - الجزائر</option>
+  <option value="W. Central Africa Standard Time">(UTC+01:00) تونس - تونس</option>
+  <option value="Libya Standard Time">(UTC+02:00) طرابلس - ليبيا</option>
+  <option value="Egypt Standard Time">(UTC+02:00) القاهرة - مصر</option>
+  <option value="E. Africa Standard Time">(UTC+03:00) الخرطوم - السودان</option>
+  <option value="Mauritius Standard Time">(UTC+04:00) موريشيوس</option>
+</optgroup>
+
+<optgroup label="المشرق العربي">
+  <option value="Jordan Standard Time">(UTC+03:00) عمّان - الأردن</option>
+  <option value="Syria Standard Time">(UTC+03:00) دمشق - سوريا</option>
+  <option value="Middle East Standard Time">(UTC+02:00) بيروت - لبنان</option>
+  <option value="West Bank Standard Time">(UTC+02:00) القدس - فلسطين</option>
+  <option value="Middle East Standard Time">(UTC+02:00) غزة - فلسطين</option>
+  <option value="Arab Standard Time">(UTC+03:00) بغداد - العراق</option>
+</optgroup>
+
+<optgroup label="أوروبا الغربية">
+  <option value="GMT Standard Time">(UTC+00:00) لندن - بريطانيا</option>
+  <option value="GMT Standard Time">(UTC+00:00) دبلن - أيرلندا</option>
+  <option value="W. Europe Standard Time">(UTC+01:00) باريس - فرنسا</option>
+  <option value="W. Europe Standard Time">(UTC+01:00) برلين - ألمانيا</option>
+  <option value="W. Europe Standard Time">(UTC+01:00) مدريد - إسبانيا</option>
+  <option value="W. Europe Standard Time">(UTC+01:00) روما - إيطاليا</option>
+  <option value="W. Europe Standard Time">(UTC+01:00) أمستردام - هولندا</option>
+  <option value="W. Europe Standard Time">(UTC+01:00) بروكسل - بلجيكا</option>
+  <option value="W. Europe Standard Time">(UTC+01:00) زيورخ - سويسرا</option>
+  <option value="W. Europe Standard Time">(UTC+01:00) لوكسمبورغ</option>
+  <option value="W. Europe Standard Time">(UTC+01:00) موناكو</option>
+</optgroup>
+
+<optgroup label="أوروبا الشمالية">
+  <option value="W. Europe Standard Time">(UTC+01:00) كوبنهاغن - الدنمارك</option>
+  <option value="W. Europe Standard Time">(UTC+01:00) أوسلو - النرويج</option>
+  <option value="W. Europe Standard Time">(UTC+01:00) ستوكهولم - السويد</option>
+  <option value="FLE Standard Time">(UTC+02:00) هلسنكي - فنلندا</option>
+  <option value="FLE Standard Time">(UTC+02:00) تالين - إستونيا</option>
+  <option value="FLE Standard Time">(UTC+02:00) ريغا - لاتفيا</option>
+  <option value="FLE Standard Time">(UTC+02:00) فيلنيوس - ليتوانيا</option>
+  <option value="Central Europe Standard Time">(UTC+01:00) وارسو - بولندا</option>
+</optgroup>
+
+<optgroup label="أوروبا الوسطى">
+  <option value="Central Europe Standard Time">(UTC+01:00) براغ - التشيك</option>
+  <option value="Central Europe Standard Time">(UTC+01:00) بودابست - المجر</option>
+  <option value="Central Europe Standard Time">(UTC+01:00) فيينا - النمسا</option>
+  <option value="Central Europe Standard Time">(UTC+01:00) ليوبليانا - سلوفينيا</option>
+  <option value="Central Europe Standard Time">(UTC+01:00) سراييفو - البوسنة والهرسك</option>
+  <option value="Central Europe Standard Time">(UTC+01:00) زغرب - كرواتيا</option>
+  <option value="Central Europe Standard Time">(UTC+01:00) سكوبيه - مقدونيا</option>
+  <option value="Central Europe Standard Time">(UTC+01:00) بلغراد - صربيا</option>
+  <option value="Central Europe Standard Time">(UTC+01:00) بودغوريتشا - الجبل الأسود</option>
+</optgroup>
+
+<optgroup label="أوروبا الشرقية">
+  <option value="E. Europe Standard Time">(UTC+02:00) بوخارست - رومانيا</option>
+  <option value="E. Europe Standard Time">(UTC+02:00) صوفيا - بلغاريا</option>
+  <option value="E. Europe Standard Time">(UTC+02:00) أثينا - اليونان</option>
+  <option value="FLE Standard Time">(UTC+02:00) كييف - أوكرانيا</option>
+  <option value="E. Europe Standard Time">(UTC+02:00) كيشيناو - مولدوفا</option>
+  <option value="Kaliningrad Standard Time">(UTC+02:00) كالينينغراد - روسيا</option>
+  <option value="Russian Standard Time">(UTC+03:00) موسكو - روسيا</option>
+  <option value="Turkey Standard Time">(UTC+03:00) أنقرة - تركيا</option>
+</optgroup>
+            </select>
+        </div>
+    </div>
+
+    <input type="hidden" id="sallaAccessToken" />
+
+    <button id="saveAutoReportBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mt-4 w-full transition-colors">
+        💾 حفظ وجدولة التقرير
+    </button>
+    <div id="autoReportMessage" class="mt-2 p-2 rounded-lg text-center hidden"></div>
+</div>
+
+<div id="currentSettingsDisplay" class="mt-8 p-4 bg-gray-800 rounded-lg mb-8 hidden">
+    <h3 class="text-xl font-semibold mb-4 text-white">الإعدادات الحالية</h3>
+    <div class="overflow-x-auto">
+        <table class="min-w-full">
+            <thead>
+                <tr class="border-b border-gray-700">
+                    <th class="p-3 text-sm font-semibold tracking-wide text-right text-gray-400">البريد الإلكتروني</th>
+                    <th class="p-3 text-sm font-semibold tracking-wide text-right text-gray-400">وقت الإرسال</th>
+                    <th class="p-3 text-sm font-semibold tracking-wide text-right text-gray-400">المنطقة الزمنية</th>
+                    <th class="p-3 text-sm font-semibold tracking-wide text-right text-gray-400">إجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="settingsTableBody">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<template id="settingRowTemplate">
+    <tr class="border-b border-gray-700">
+        <td class="p-3 text-white" data-td="email"></td>
+        <td class="p-3 text-white" data-td="time"></td>
+        <td class="p-3 text-white" data-td="timezone"></td>
+        <td class="p-3">
+            <div class="flex items-center gap-2">
+                <button class="edit-btn bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 text-sm rounded transition-colors">
+                    ✏️ تعديل
+                </button>
+                <button class="delete-btn bg-red-600 hover:bg-red-700 text-white px-3 py-1 text-sm rounded transition-colors">
+                    🗑️ حذف
+                </button>
+            </div>
+        </td>
+    </tr>
+</template>
+        <!-- إعدادات الأعمدة -->
+        <div class="mt-8 p-4 bg-gray-800 rounded-lg">
+            <h3 class="text-xl font-semibold mb-4 text-white">أعمدة تقرير الطلبات المتأخرة</h3>
+            <p class="text-gray-400 mb-4">حدد الأعمدة التي تريد عرضها في تقرير الطلبات المتأخرة</p>
+            
+            <div class="checkbox-group">
+                <label class="flex items-center space-x-2 space-x-reverse text-white">
+                    <input type="checkbox" id="col_orderNumber" class="form-checkbox" checked />
+                    <span>رقم الطلب</span>
+                </label>
+                <label class="flex items-center space-x-2 space-x-reverse text-white">
+                    <input type="checkbox" id="col_status" class="form-checkbox" checked />
+                    <span>الحالة</span>
+                </label>
+                <label class="flex items-center space-x-2 space-x-reverse text-white">
+                    <input type="checkbox" id="col_orderDate" class="form-checkbox" checked />
+                    <span>تاريخ الطلب</span>
+                </label>
+                <label class="flex items-center space-x-2 space-x-reverse text-white">
+                    <input type="checkbox" id="col_lastUpdate" class="form-checkbox" checked />
+                    <span>آخر تحديث</span>
+                </label>
+                <label class="flex items-center space-x-2 space-x-reverse text-white">
+                    <input type="checkbox" id="col_delayDays" class="form-checkbox" checked />
+                    <span>أيام التأخير</span>
+                </label>
+                <label class="flex items-center space-x-2 space-x-reverse text-white">
+                    <input type="checkbox" id="col_sinceLastUpdate" class="form-checkbox" checked />
+                    <span>منذ آخر تحديث</span>
+                </label>
+                <label class="flex items-center space-x-2 space-x-reverse text-white">
+                    <input type="checkbox" id="col_policyNumber" class="form-checkbox" checked />
+                    <span>رقم البوليصة</span>
+                </label>
+                <label class="flex items-center space-x-2 space-x-reverse text-white">
+                    <input type="checkbox" id="col_city" class="form-checkbox" checked />
+                    <span>المدينة</span>
+                </label>
+                <label class="flex items-center space-x-2 space-x-reverse text-white">
+                    <input type="checkbox" id="col_shippingCompany" class="form-checkbox" checked />
+                    <span>شركة الشحن</span>
+                </label>
+                <label class="flex items-center space-x-2 space-x-reverse text-white">
+                    <input type="checkbox" id="col_country" class="form-checkbox" checked />
+                    <span>الدولة</span>
+                </label>
+                <label class="flex items-center space-x-2 space-x-reverse text-white">
+                    <input type="checkbox" id="col_notes" class="form-checkbox" checked />
+                    <span>الملاحظات</span>
+                </label>
+            </div>
+        </div>
+
+        <button id="saveColumnsBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mt-4 w-full transition-colors">
+            💾 حفظ إعدادات الأعمدة
+        </button>
+        <div id="columnsMessage" class="mt-2 p-2 rounded-lg text-center hidden"></div>
+
+
+        <div id="message" class="mt-4 p-4 rounded-lg hidden"></div>
+    </div>
+
+</body>
+</html>

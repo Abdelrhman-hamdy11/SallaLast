@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <title>📦 تقرير سلسلة الطلبات</title>
+</head>
+<body>
+<div class="p-4 md:p-6">
+    <h2 class="text-2xl font-bold mb-4 dark:text-white">تقرير سلسلة الطلبات</h2>
+
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div>
+                <label for="series-startDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">من تاريخ:</label>
+                <input type="date" id="series-startDate" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+            </div>
+            <div>
+                <label for="series-endDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">إلى تاريخ:</label>
+                <input type="date" id="series-endDate" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+            </div>
+            <div>
+                <label for="series-countryFilter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الدولة:</label>
+                <select id="series-countryFilter" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+                    <option value="all">الكل</option>
+                    <option value="السعودية">السعودية</option>
+                    <option value="الامارات">الامارات</option>
+                    <option value="البحرين">البحرين</option>
+                    <option value="عمان">عمان</option>
+                    <option value="قطر">قطر</option>
+                </select>
+            </div>
+            <div>
+                <label for="series-interval" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الإطار الزمني:</label>
+                <select id="series-interval" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+                    <option value="daily">يومي</option>
+                    <option value="weekly">أسبوعي</option>
+                    <option value="monthly">شهري</option>
+                </select>
+            </div>
+        </div>
+        <div class="mt-4">
+            <button id="series-generate-report-btn" class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700">📊 توليد التقرير</button>
+        </div>
+    </div>
+
+    <div class="flex justify-start items-center mb-4 space-x-2 space-x-reverse">
+        <button id="series-download-csv-btn" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">⬇️ تحميل CSV</button>
+        <button id="series-download-pdf-btn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">⬇️ تحميل PDF</button>
+    </div>
+
+    <div id="reportWrapper" class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <table id="reportTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">الفترة</th>
+                    <th scope="col" class="px-6 py-3">الإجمالي</th>
+                    <th scope="col" class="px-6 py-3">تم التنفيذ</th>
+                    <th scope="col" class="px-6 py-3">تم التوصيل</th>
+                    <th scope="col" class="px-6 py-3">جاري التوصيل</th>
+                    <th scope="col" class="px-6 py-3">ملغي</th>
+                </tr>
+            </thead>
+            <tbody id="reportBody">
+                <tr><td colspan="6" class="text-center p-5">الرجاء تحديد الفلاتر والضغط على "توليد التقرير".</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

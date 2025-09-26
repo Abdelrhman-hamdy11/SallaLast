@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعديل المستخدم</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+
+<div class="p-4 md:p-8">
+    <div class="max-w-2xl mx-auto">
+
+        <div class="mb-8">
+            <button class="back-to-users-btn text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center mb-4 font-semibold">
+                <i class="fas fa-arrow-right ml-2"></i>
+                <span>العودة إلى إدارة المستخدمين</span>
+            </button>
+
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">
+                تعديل المستخدم: <span id="edit-user-title-name" class="text-blue-600 dark:text-blue-400"></span>
+            </h1>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8">
+            <form id="editUserForm" class="space-y-6">
+                
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">اسم المستخدم (لا يمكن تغييره)</label>
+                    <input type="text" id="username" readonly class="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-lg cursor-not-allowed">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="email" required class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                </div>
+
+<div>
+    <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        كلمة المرور
+    </label>
+    <div class="relative">
+        <input type="password" id="password"
+            class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 
+                   dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 
+                   focus:border-blue-500 transition **pr-10**"> <button type="button" id="togglePassword" 
+                class="absolute inset-y-0 left-0 flex items-center px-3 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition" 
+                aria-label="إظهار/إخفاء كلمة المرور">
+            <i class="fas fa-eye-slash"></i> </button>
+        </div>
+</div>
+
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">الدور</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <label>
+                            <input type="radio" name="role" value="Admin" class="sr-only peer">
+                            <div class="p-4 flex items-center gap-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/40 transition">
+                                <i class="fas fa-user-shield text-gray-500"></i>
+                                <div class="flex-grow">
+                                    <span class="font-semibold text-gray-800 dark:text-gray-200">مسؤول نظام</span>
+                                </div>
+                            </div>
+                        </label>
+                        <label>
+                            <input type="radio" name="role" value="User" class="sr-only peer">
+                            <div class="p-4 flex items-center gap-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/40 transition">
+                                <i class="fas fa-user text-gray-500"></i>
+                                <div class="flex-grow">
+                                    <span class="font-semibold text-gray-800 dark:text-gray-200">مستخدم</span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex items-center gap-4">
+                    <button type="submit" class="w-full md:w-auto flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition">
+                        تحديث المستخدم
+                    </button>
+                    <button type="button" class="cancel-btn w-full md:w-auto flex-1 md:flex-none bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-bold py-2 px-6 rounded-lg transition">
+                        إلغاء
+                    </button>
+                </div>
+            </form>
+            <div id="message" class="mt-6 text-center font-bold text-sm"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

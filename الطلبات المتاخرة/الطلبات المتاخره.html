@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <title>تقرير الطلبات المتأخرة</title>
+</head>
+<body>
+<div class="p-4 md:p-6">
+    <h2 class="text-2xl font-bold mb-4 dark:text-white">تقرير الطلبات المتأخرة</h2>
+    
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div>
+                <label for="delayed-todayDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">تاريخ اليوم:</label>
+                <input type="date" id="delayed-todayDate" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+            </div>
+            <div>
+                <label for="delayed-startDate" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">من تاريخ:</label>
+                <input type="date" id="delayed-startDate" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+            </div>
+            <div>
+                <label for="delayed-countryFilter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">الدولة:</label>
+                <select id="delayed-countryFilter" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+                    <option value="all">الكل</option>
+                    <option value="السعودية">السعودية</option>
+                    <option value="الامارات">الامارات</option>
+                    <option value="البحرين">البحرين</option>
+                    <option value="عمان">عمان</option>
+                    <option value="قطر">قطر</option>
+                </select>
+            </div>
+            <div>
+                <label for="delayed-carrierFilter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">شركة الشحن:</label>
+                <select id="delayed-carrierFilter" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+                    <option value="all">الكل</option>
+                    <option value="أرامكس">أرامكس</option>
+                    <option value="تصل">تصل</option>
+                    <option value="ناجز اكسبريس">ناجز اكسبريس</option>
+                </select>
+            </div>
+        </div>
+        <div class="mt-4 flex justify-between items-center">
+            <button id="delayed-generate-report-btn" class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700">📊 توليد التقرير</button>
+        </div>
+    </div>
+    
+    <div class="flex justify-start items-center mb-4 space-x-2 space-x-reverse">
+        <button id="delayed-download-csv-btn" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">⬇️ تحميل CSV</button>
+        <button id="delayed-download-pdf-btn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">⬇️ تحميل PDF</button>
+    </div>
+    <div id="reportWrapper" class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+        <table id="reportTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th class="px-4 py-3">رقم الطلب</th><th class="px-4 py-3">الحالة</th><th class="px-4 py-3">تاريخ الطلب</th>
+                    <th class="px-4 py-3">آخر تحديث</th><th class="px-4 py-3">أيام التأخير</th><th class="px-4 py-3">منذ آخر تحديث</th>
+                    <th class="px-4 py-3">رقم البوليصة</th><th class="px-4 py-3">المدينة</th><th class="px-4 py-3">شركة الشحن</th>
+                    <th class="px-4 py-3">الدولة</th><th class="px-4 py-3 min-w-[210px]">الملاحظات</th>
+                </tr>
+            </thead>
+            <tbody id="reportBody" class="dark:text-gray-300">
+                <tr><td colspan="11" class="text-center p-5">الرجاء الضغط على "توليد التقرير" لعرض البيانات.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Modal -->
+<div id="noteDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-96 p-6">
+    <h2 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-100">تفاصيل الملاحظة</h2>
+    <div id="noteDetailsContent" class="text-sm text-gray-700 dark:text-gray-200 space-y-2"></div>
+    <div class="mt-4 flex justify-end">
+      <button id="closeNoteModal" class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-lg">إغلاق</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <div class="p-4 md:p-6 space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <div class="lg:col-span-1 bg-gradient-to-br from-teal-500 to-cyan-600 dark:from-teal-700 dark:to-cyan-800 rounded-xl shadow-lg p-6 text-white relative overflow-hidden">
+            <div class="relative z-10">
+                <h2 class="text-2xl font-bold">مرحبًا 👋</h2>
+                <p id="welcome-user-name" class="text-lg font-semibold mt-1"></p>
+            </div>
+            <i class="fas fa-store absolute -bottom-4 -left-4 text-white/5 text-8xl transform rotate-[-20deg]"></i>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex justify-between items-center">
+            <div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">إجمالي الطلبات</p>
+                <p id="metric-total-orders" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-1">0</p>
+            </div>
+            <div class="bg-blue-100 dark:bg-blue-900/50 p-3 rounded-full">
+                <i class="fas fa-box-open text-xl text-blue-500 dark:text-blue-400"></i>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex justify-between items-center">
+            <div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">إجمالي المبيعات</p>
+                <p class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-1">
+                    <span id="metric-total-sales">0</span>
+                    <span class="text-lg font-medium text-gray-400">ر.س</span>
+                </p>
+            </div>
+            <div class="bg-green-100 dark:bg-green-900/50 p-3 rounded-full">
+                <i class="fas fa-wallet text-xl text-green-500 dark:text-green-400"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        
+        <div class="lg:col-span-3 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">المبيعات الشهرية (هذا العام)</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">الإجمالي: <span id="total-sales-year" class="font-bold">0 ر.س</span></p>
+            </div>
+            <div class="h-64">
+                <canvas id="sales-chart"></canvas>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">نظرة سريعة</h3>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <p class="text-gray-600 dark:text-gray-300">الطلبات الجديدة اليوم</p>
+                    <p id="stats-orders-today" class="font-bold text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-md">0</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="text-gray-600 dark:text-gray-300">الطلبات قيد الشحن</p>
+                    <p id="stats-orders-shipping" class="font-bold text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-md">0</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="text-gray-600 dark:text-gray-300">إجمالي العملاء</p>
+                    <p id="stats-total-customers" class="font-bold text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-md">0</p>
+                </div>
+                 <div class="flex justify-between items-center">
+                    <p class="text-red-500 dark:text-red-400">الطلبات الملغاة (آخر 7 أيام)</p>
+                    <p id="stats-cancelled-orders" class="font-bold text-red-500 dark:text-red-400 bg-red-100 dark:bg-red-900/50 px-3 py-1 rounded-md">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+

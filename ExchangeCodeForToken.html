@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تم تسجيل الدخول - Salla</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f7f7f7; text-align: center; }
+    .box { max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .success { color: green; font-size: 20px; margin-bottom: 20px; }
+    .error { color: red; font-size: 18px; margin-bottom: 20px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: none; background-color: #28a745; color: white; }
+    button:disabled { background-color: #6c757d; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>🔗 ربط سلة</h1>
+    <div id="result">⏳ جاري معالجة تسجيل الدخول...</div>
+    <div id="actions" style="margin-top:20px;"></div>
+  </div>
+
+<script>
+const API_BASE_URL = "https://sala.runasp.net/api"; 
+let savedData = null;
+
+async function handleSallaCallback() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const state = params.get('state');
+
+    if (!code || !state) {
+        document.getElementById("result").innerHTML = `<p class="error">❌ لا يوجد كود OAuth في الرابط.</p>`;
+        return;
+    }
+
+    try {
+        const resp = await fetch(`${API_BASE_URL}/SallaAuth/ExchangeCodeForToken`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code })
+        });
+
+        const text = await resp.text();
+        
+        if (!resp.ok) {
+            throw new Error(`فشل الاستدعاء: ${resp.status} - ${text}`);
+        }
+
+        const data = JSON.parse(text);
+
+        if (data.accessToken) {
+            localStorage.setItem("salla_access_token", data.accessToken);
+            localStorage.setItem("salla_refresh_token", data.refreshToken ?? "");
+            localStorage.setItem("salla_user_info", JSON.stringify(data.user ?? {}));
+            
+            savedData = {
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken ?? '',
+                expiry: new Date().toISOString(),
+                userData: data.user ?? {}
+            };
+
+            document.getElementById("result").innerHTML = `<p class="success">✅ تم تسجيل الدخول بنجاح!</p>`;
+            document.getElementById("actions").innerHTML = `<button id="proceedBtn">متابعة إلى الداشبورد</button>`;
+
+            document.getElementById("proceedBtn").addEventListener("click", async () => {
+                document.getElementById("proceedBtn").disabled = true;
+                document.getElementById("proceedBtn").innerText = "⏳ جاري الحصول على الإيميل وحفظ البيانات...";
+                
+                let email = null;
+                
+                if (savedData.userData && savedData.userData.email) {
+                    email = savedData.userData.email;
+                }
+                
+                if (!email) {
+                    try {
+                        email = await saveAdminEmail(savedData.accessToken);
+                    } catch {}
+                }
+                
+                if (!email) {
+                    const userInfo = JSON.parse(localStorage.getItem("salla_user_info") || "{}");
+                    if (userInfo.email) {
+                        email = userInfo.email;
+                    }
+                }
+                
+                if (!email) {
+                    email = `admin_${Date.now()}@temp.com`;
+                }
+                
+                localStorage.setItem("sala_admin_email", email);
+                
+                await saveTokensToBackend(email, savedData.accessToken, savedData.refreshToken, savedData.expiry);
+                window.location.href = "dashboard.html";
+            });
+
+        } else {
+            throw new Error("الرد لم يحتوي على accessToken");
+        }
+    } catch (err) {
+        document.getElementById("result").innerHTML = `<p class="error">❌ خطأ: ${err.message}</p>`;
+    } finally {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+}
+
+async function saveAdminEmail(token) {
+    const endpoints = [
+        'https://accounts.salla.sa/oauth2/user/info',
+        'https://accounts.salla.sa/oauth2/user',
+        'https://api.salla.dev/admin/v2/oauth2/user/info'
+    ];
+    
+    for (const endpoint of endpoints) {
+        try {
+            const resp = await fetch(endpoint, {
+                method: 'GET',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!resp.ok) continue;
+            
+            const data = await resp.json();
+
+            let email = null;
+            if (data.success && data.data && data.data.email) {
+                email = data.data.email;
+            } else if (data.email) {
+                email = data.email;
+            } else if (data.user && data.user.email) {
+                email = data.user.email;
+            } else if (data.data && data.data.user && data.data.user.email) {
+                email = data.data.user.email;
+            }
+            
+            if (email) {
+                localStorage.setItem("sala_admin_email", email);
+                return email;
+            }
+        } catch {}
+    }
+    
+    throw new Error("لم يتم العثور على الإيميل من أي Endpoint");
+}
+
+async function saveTokensToBackend(email, accessToken, refreshToken, expiry) {
+    const payload = { email, accessToken, refreshToken, tokenExpiry: expiry };
+    
+    try {
+        const resp = await fetch(`${API_BASE_URL}/Account/ConnectWithSalla`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!resp.ok) {
+            console.error("فشل حفظ البيانات في الباك إند");
+        }
+    } catch (err) {
+        console.error("مشكلة في الاتصال بالباك إند:", err.message);
+    }
+}
+window.addEventListener("load", handleSallaCallback);
+</script>
+</body>
+</html>
